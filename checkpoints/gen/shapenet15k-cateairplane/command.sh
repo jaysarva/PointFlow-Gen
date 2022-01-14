@@ -1,0 +1,1 @@
+python -X faulthandler train.py --log_name gen/shapenet15k-cateairplane --lr 2e-3 --dataset_type shapenet15k --data_dir data/ShapeNetCore.v2.PC15k --cates airplane --dims 512-512-512 --latent_dims 256-256 --num_blocks 1 --latent_num_blocks 1 --batch_size 16 --zdim 128 --epochs 4000 --save_freq 50 --viz_freq 1 --log_freq 1 --val_freq 10 --use_latent_flow
