@@ -5,7 +5,7 @@ import diffeq
 
 __all__ = ["ODEnet", "ODEfunc"]
 
-
+### pulled from the original paper 
 def divergence_approx(f, y, e=None):
     e_dzdx = torch.autograd.grad(f, y, e, create_graph=True)[0]
     e_dzdx_e = e_dzdx.mul(e)

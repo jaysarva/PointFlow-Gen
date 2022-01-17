@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 
 
+##### Pulled directly from original implementation
 def weights_init(m):
     classname = m.__class__.__name__
     if classname.find('Linear') != -1 or classname.find('Conv') != -1:

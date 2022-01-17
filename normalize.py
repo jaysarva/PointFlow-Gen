@@ -4,7 +4,7 @@ from torch.nn import Parameter
 from utils import reduce_tensor
 
 __all__ = ['MovingBatchNorm1d']
-
+#### Normalization pulled from original paper
 def reduce_tensor(tensor, world_size=None):
     rt = tensor.clone()
     torch.distributed.all_reduce(rt, op=torch.distributed.ReduceOp.SUM)

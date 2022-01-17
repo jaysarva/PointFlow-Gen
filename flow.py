@@ -3,87 +3,63 @@ from normalize import MovingBatchNorm1d
 from cnf import CNF, SequentialFlow
 
 
-def count_nfe(model):
-    class AccNumEvals(object):
-
-        def __init__(self):
-            self.num_evals = 0
-
-        def __call__(self, module):
-            if isinstance(module, CNF):
-                self.num_evals += module.num_evals()
-
-    accumulator = AccNumEvals()
-    model.apply(accumulator)
-    return accumulator.num_evals
-
-
-def count_parameters(model):
-    return sum(p.numel() for p in model.parameters() if p.requires_grad)
-
-
-def count_total_time(model):
-    class Accumulator(object):
-
-        def __init__(self):
-            self.total_time = 0
-
-        def __call__(self, module):
-            if isinstance(module, CNF):
-                self.total_time = self.total_time + module.sqrt_end_time * module.sqrt_end_time
-
-    accumulator = Accumulator()
-    model.apply(accumulator)
-    return accumulator.total_time
-
-
-def build_model(args, input_dim, hidden_dims, context_dim, num_blocks, conditional):
-    def build_cnf():
-        diffeq = ODEnet(
-            hidden_dims=hidden_dims,
-            input_shape=(input_dim,),
-            context_dim=context_dim,
-            layer_type=args.layer_type,
-            nonlinearity=args.nonlinearity,
-        )
-        odefunc = ODEfunc(
-            diffeq=diffeq,
-        )
-        cnf = CNF(
-            odefunc=odefunc,
-            T=args.time_length,
-            train_T=args.train_T,
-            conditional=conditional,
-            solver=args.solver,
-            use_adjoint=args.use_adjoint,
-            atol=args.atol,
-            rtol=args.rtol,
-        )
-        return cnf
-
-    chain = [build_cnf() for _ in range(num_blocks)]
-    if args.batch_norm:
-        bn_layers = [MovingBatchNorm1d(input_dim, bn_lag=args.bn_lag, sync=args.sync_bn)
-                     for _ in range(num_blocks)]
-        bn_chain = [MovingBatchNorm1d(input_dim, bn_lag=args.bn_lag, sync=args.sync_bn)]
-        for a, b in zip(chain, bn_layers):
-            bn_chain.append(a)
-            bn_chain.append(b)
-        chain = bn_chain
-    model = SequentialFlow(chain)
-
-    return model
-
-
 def get_point_cnf(args):
     dims = tuple(map(int, args.dims.split("-")))
-    model = build_model(args, args.input_dim, dims, args.zdim, args.num_blocks, True).cuda()
-    print("Number of trainable parameters of Point CNF: {}".format(count_parameters(model)))
+    model = build_model(args, args.input_dim, dims, args.zdim, args.num_blocks, True)
     return model
 
 
 def get_latent_cnf(args):
     dims = tuple(map(int, args.latent_dims.split("-")))
-    model = build_model(args, args.zdim, dims, 0, args.latent_num_blocks, False).cuda()
-    print("Number of trainable parameters of Latent CNF: {}".format(count_parameters(model)))
+    model = build_model(args, args.zdim, dims, 0, args.latent_num_blocks)
     return model
+
+def build_model(input_dim, hidden_dims, context_dim, num_blocks):
+    def build_cnf():
+        diffeq = ODEnet(hidden_dims=hidden_dims, input_shape=(input_dim,), context_dim=context_dim)
+        odefunc = ODEfunc(diffeq=diffeq)
+        cnf = CNF(odefunc=odefunc)
+        return cnf
+
+    chain = [build_cnf() for i in range(num_blocks)]
+    bn_layers = [MovingBatchNorm1d(input_dim) for _ in range(num_blocks)]
+    bn_chain = [MovingBatchNorm1d(input_dim)]
+    for a, b in zip(chain, bn_layers):
+        bn_chain.append(a)
+        bn_chain.append(b)
+    chain = bn_chain
+    model = SequentialFlow(chain)
+
+    return model.cuda()
+
+
+def count_nfe(model):
+    class AccEvals(object):
+        def __init__(self):
+            self.evals = 0
+
+        def __call__(self, m):
+            if isinstance(m, CNF):
+                self.evals += m.evals()
+
+    acc = AccEvals()
+    model.apply(acc)
+    return acc.evals
+
+
+def count_parameters(m):
+    return sum(param.numel() for param in m.parameters() if param.requires_grad)
+
+
+def count_total_time(model):
+    class Accumulator(object):
+        def __init__(self):
+            self.time = 0
+
+        def __call__(self, m):
+            if isinstance(m, CNF):
+                self.time += + m.sqrt_end_time * m.sqrt_end_time
+
+    acc = Accumulator()
+    model.apply(acc)
+    return acc.total_time
