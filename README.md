@@ -1,5 +1,4 @@
 # PointFlow -- Point Cloud Generation
-![Blueno collage](/generator_outputs/collage/collage.png)
 This is my implementation of PointFlow, a generative model proposed by Yang et al. (2019). 
 
 ## Running the model
@@ -12,7 +11,7 @@ This model essentially learns two sets of probability distributions where one is
 I trained on airplane meshes from the ShapeNetCore dataset, using the PyTorch3D data loader. 
 
 ## Results
-It should be noted that the below results are not particularly well trained due to Google Colab not being very cooperative, leading me to have to train locally. With many more epochs, results may be substantially better. 
+It should be noted that the below results are not particularly well trained due to Google Colab not being very cooperative, leading me to have to train locally. With more epochs, results may be substantially better. 
 
 Below are some generated images after training. Point clouds were rendered with [this tool](https://github.com/zekunhao1995/PointFlowRenderer)
 
@@ -22,5 +21,4 @@ Below are some generated images after training. Point clouds were rendered with 
 
 
 ## References
-[1] Ruihui Li, Xianzhi Li, Ka-Hei Hui, and Chi-Wing Fu. 2021. SP-GAN: Sphere-Guided 3D Shape Generation and Manipulation. ACM Trans. Graph. 40, 4,
-Article 151 (August 2021), 13 pages. https://doi.org/10.1145/3450626.3459766
+[1] Guandao Yang, Xun Huang, Zekun Hao, Ming-Yu Liu, Serge Belongie, Bharath Hariharan. 2019. PointFlow: 3D Point Cloud Generation With Continuous Normalizing Flows. ICCV. pp. 4541-4550.
