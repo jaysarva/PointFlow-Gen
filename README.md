@@ -17,7 +17,7 @@ Below are some generated images after training. Point clouds were rendered with 
 
 ![](/imgs/im1.png)
 ![](/imgs/im2.png)
-
+![](/imgs/im3.png)
 
 
 ## References
