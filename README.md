@@ -8,7 +8,7 @@ To train and test your model, run the respective files. I've included one set of
 This model essentially learns two sets of probability distributions where one is the distribution of 'shapes' and the second level is the distribution of specific points given a shape that is being modeled. 
 
 ## Dataset
-I trained on airplane meshes from the ShapeNetCore dataset, using the PyTorch3D data loader. 
+I trained on chair meshes from the ShapeNetCore dataset, using the PyTorch3D data loader. 
 
 ## Results
 It should be noted that the below results are not particularly well trained due to Google Colab not being very cooperative, leading me to have to train locally. With more epochs, results may be substantially better. 
@@ -21,4 +21,4 @@ Below are some generated images after training. Point clouds were rendered with 
 
 
 ## References
-[1] Guandao Yang, Xun Huang, Zekun Hao, Ming-Yu Liu, Serge Belongie, Bharath Hariharan. 2019. PointFlow: 3D Point Cloud Generation With Continuous Normalizing Flows. ICCV. pp. 4541-4550.
+[1] Guandao Yang, Xun Huang, Zekun Hao, Ming-Yu Liu, Serge Belongie, Bharath Hariharan. 2019. PointFlow: 3D Point Cloud Generation With Continuous Normalizing Flows. ICCV. pp. 4541-4550. .
